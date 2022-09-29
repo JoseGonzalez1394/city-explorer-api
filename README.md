@@ -32,4 +32,4 @@ JSX used to code for REACT
 ## Credit and Collaborations
 <!-- Give credit (and a link) to other people or resources that helped you build this application. -->
 
-Adam, Justin, Julian Barker
+Adam, Justin, Julian Barker, TA
