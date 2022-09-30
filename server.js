@@ -7,10 +7,10 @@ const express = require('express');
 //allows for cross origin resource sharing
 const cors = require('cors');
 //load data
-const weatherData = require('./data/weather.json');
-const res = require('express/lib/response');
+const data = require('./data/weather.json');
 // start up server
 const app = express();
+const axios = require('axios');
 //middleware
 app.use(cors());
 //declare our PORT variable
@@ -21,47 +21,59 @@ app.listen(PORT, () => console.log(`Listening on PORT ${PORT}`));
 //Endpoints:
 
 //sends a response
-app.get('/', (req, res) => {
-  res.send({ weatherData });
-});
+// app.get('/', (req, res) => {
+//   res.send({ weatherData });
+// });
 
+// Endpoints:
 class Forecast {
-  constructor(date, description) {
+  constructor(date, high_temp, low_temp, desc) {
+    this.description = `Low of ${low_temp}, high of ${high_temp} with ${desc}`;
     this.date = date;
-    this.description = description;
   }
 }
-app.get('/weather', (req, res) => {
-  console.log(req);
-  let weatherArr = [];
-  // const userQuery = req.query.searchQuery;
-  // const userLat = req.query.lat;
-  // const userLon = req.query.lon;
-  // const weatherCity = weatherData.find(element => element.city_name === userQuery || element.lat === userLat || element.lon === userLon);
-  // if (weatherCity){
-  //  let date = userWeather.data.valid_date
-  //  let description = user
-  // }
 
-  weatherData.forEach(city => {
+class Movie {
+  constructor(title) {
+    this.title = title;
+  }
+}
 
-    city.data.forEach(day => {
-
-      let dayForecast = new Forecast(day.valid_date, day.weather.description);
-      weatherArr.push(dayForecast);
-
-    });
-
-  });
-
-  res.status(200);
-  res.send(weatherArr);
-
+app.get("/", (req, res) => {
+  res.send('Hello from the Back End, What What!');
 });
 
-app.get('/forecast', (req, res) => {
-  res.send({ Forecast });
+app.get('/weather', async (req, res) => {
+
+  try {
+    const { lat, lon } = req.query
+    const API = `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${process.env.REACT_APP_WEATHER_BIT_KEY}`;
+    const response = await axios.get(API);
+console.log(response.data.data); 
+    res.send(response.data.data.map(forecastData => new Forecast(forecastData.datetime, forecastData.temp, forecastData.temp, forecastData.weather.description)))
+  }
+
+  catch (error) {
+    console.log(error);
+  }
 });
+
+app.get('/movies', async (req, res) => {
+
+  try {
+    const { searchQuery} = req.query
+    const API = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_MOVIE_DB_KEY}&query=${searchQuery}`;
+    console.log(API);
+    const movieResponse = await axios.get(API);
+    const movies = movieResponse.data.results.slice(0,4);
+    res.send(movies.map(movieData => new Movie(movieData.title)));
+  }
+
+  catch (error) {
+    console.log(error);
+  }
+});
+
 //catch all endpoint:
 app.get('*', (req, res) => {
   res.status(404).send('Page Not Found');
