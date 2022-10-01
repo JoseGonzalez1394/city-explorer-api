@@ -9,9 +9,10 @@ Extremely watered down version of google maps with local data imported from loca
 
 ![city-explorer-api lab07](./img/301-lab07.png)
 ![city-explorer-api lab08](./img/301-lab08.png)
+![city-explorer-api lab10](./img/301-lab10.png)
 
 city explorer image breakdown ("https://josegonzalez799970.invisionapp.com/freehand/City-Explorer-CP2VdUDMN")
-image.png## Getting Started
+## Getting Started
 <!-- What are the steps that a user must take in order to build this app on their own machine and get it running? -->
 create REACT APP 
 import axios 
