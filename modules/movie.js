@@ -6,8 +6,7 @@ const cacheClass = require("./cache.js");
 
 const cache = new cacheClass();
 
-
-const API = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}`;
+require('dotenv').config();
 
 class Movie {
     constructor(title) {
@@ -15,7 +14,7 @@ class Movie {
     }
   }
 
-app.get('/movies', async (req, res) => {
+  async function handleMovies(req,res){
 
     try {
       const { searchQuery} = req.query
@@ -29,7 +28,7 @@ app.get('/movies', async (req, res) => {
     catch (error) {
       console.log(error);
     }
-  });
+  };
   
 
-module.exports = getMovies;
+module.exports = handleMovies;
